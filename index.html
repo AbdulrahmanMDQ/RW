@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Morning Routine">
+<meta name="theme-color" content="#1B1E3D">
+<title>Morning Routine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night: #1B1E3D;
+    --dusk: #4A3B66;
+    --dawn: #FF7A59;
+    --amber: #F4A259;
+    --day: #FDF8F3;
+    --ink: #241F3D;
+    --ink-soft: #6b6580;
+    --sage: #6B9080;
+    --gold: #D4A574;
+    --card: #FFFDF9;
+    --t: 0;
+    --radius: 22px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Work Sans', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 90% at 50% 0%,
+        color-mix(in srgb, var(--dawn) calc(var(--t) * 100%), var(--night) calc((1 - var(--t)) * 100%)) 0%,
+        color-mix(in srgb, var(--amber) calc(var(--t) * 100%), var(--dusk) calc((1 - var(--t)) * 100%)) 45%,
+        color-mix(in srgb, var(--day) calc(var(--t) * 100%), var(--night) calc((1 - var(--t)) * 100%)) 100%);
+    transition: background 0.7s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 28px 16px;
+    overflow-x:hidden;
+  }
+
+  .stage{
+    width:100%;
+    max-width: 560px;
+  }
+
+  .arc-wrap{
+    position:relative;
+    height: 92px;
+    margin-bottom: 8px;
+  }
+
+  .arc-wrap svg{ width:100%; height:100%; display:block; overflow:visible; }
+
+  .sun{
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--amber) 70%, transparent));
+    transition: cx 0.6s cubic-bezier(.65,0,.35,1), cy 0.6s cubic-bezier(.65,0,.35,1);
+  }
+
+  .steplabel{
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--day) calc(var(--t) * 100%), #cfcbe6 calc((1 - var(--t)) * 100%));
+    margin-bottom: 22px;
+    opacity:0.85;
+  }
+
+  .card{
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 40px 34px 32px;
+    box-shadow: 0 24px 60px -20px rgba(20,15,40,0.45), 0 2px 0 rgba(255,255,255,0.6) inset;
+    min-height: 340px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .icon{
+    width:44px; height:44px;
+    stroke: var(--dawn);
+    stroke-width:1.5;
+    fill:none;
+    margin-bottom:18px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 30px;
+    line-height:1.15;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .sub{
+    color: var(--ink-soft);
+    font-size:15px;
+    line-height:1.5;
+    margin: 0 0 26px;
+    max-width: 42ch;
+  }
+
+  .actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:auto;
+  }
+
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    color: var(--ink);
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn:focus-visible{ outline: 2px solid var(--dawn); outline-offset:2px; }
+
+  .btn-primary{
+    background: linear-gradient(135deg, var(--dawn), var(--amber));
+    color: #fff;
+    box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--dawn) 70%, transparent);
+  }
+  .btn-secondary{
+    background: color-mix(in srgb, var(--gold) 18%, #fff);
+    border: 1px solid color-mix(in srgb, var(--gold) 45%, #fff);
+  }
+  .btn-arrow{ font-size:16px; opacity:0.7; }
+
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 12px;
+    margin-top: 22px;
+    padding: 0 4px;
+  }
+  .nav button{
+    cursor:pointer;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.02em;
+    border-radius: 999px;
+    padding: 12px 22px;
+    border: none;
+  }
+  .nav button:focus-visible{ outline: 2px solid var(--dawn); outline-offset:2px; }
+
+  .back-main:disabled{ opacity:0; pointer-events:none; }
+  .next-main:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    filter: none;
+  }
+
+  .back-main{
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid #ddd6c4 !important;
+  }
+  .back-main:hover{ background: #f6f1e6; }
+
+  .next-main{
+    background: linear-gradient(135deg, var(--dawn), var(--amber));
+    color: #fff !important;
+    box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--dawn) 70%, transparent);
+  }
+  .next-main:hover{ filter: brightness(1.05); }
+
+  .edit-row{
+    display:flex;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  .edit-link-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    padding: 4px 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .edit-link-btn:hover{ color: var(--dawn); }
+  .edit-link-btn:focus-visible{ outline: 2px solid var(--dawn); outline-offset:2px; }
+
+  .edit-fields{
+    display:flex;
+    flex-direction:column;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .edit-field{
+    display:flex;
+    flex-direction:column;
+    gap: 5px;
+  }
+  .edit-field label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .edit-input{
+    font-family:'Work Sans', sans-serif;
+    font-size: 14.5px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1px solid #e4dfd2;
+    background: #fffefc;
+    color: var(--ink);
+  }
+  .edit-input:focus-visible{ outline: 2px solid var(--dawn); outline-offset:1px; }
+
+  .edit-link-btn.danger{
+    color: #c0604a;
+  }
+  .edit-link-btn.danger:hover{ color: #a3492f; }
+
+  .remove-confirm{
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: color-mix(in srgb, #c0604a 10%, #fff);
+    border: 1px solid color-mix(in srgb, #c0604a 30%, #fff);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .remove-confirm-actions{
+    display:flex;
+    gap:16px;
+    margin-top: 8px;
+  }
+  .remove-confirm-actions .edit-link-btn{ font-size: 12px; }
+
+  .skill-note{
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #e4dfd2;
+  }
+  .skill-note-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+  .skill-note-text{
+    font-size: 14px;
+    line-height:1.5;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .skill-note-empty{
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .skill-note-input{
+    width:100%;
+    font-family:'Work Sans', sans-serif;
+    font-size: 14px;
+    line-height:1.5;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1px solid #e4dfd2;
+    background: #fffefc;
+    color: var(--ink);
+    resize: vertical;
+    margin-bottom: 10px;
+  }
+  .skill-note-input:focus-visible{ outline: 2px solid var(--dawn); outline-offset:1px; }
+
+  .outer-actions{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:16px;
+  }
+  .outer-btn{
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: color-mix(in srgb, var(--day) calc(var(--t) * 100%), #f1eef9 calc((1 - var(--t)) * 100%));
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .outer-btn:hover{ background: rgba(255,255,255,0.24); }
+  .outer-btn:focus-visible{ outline: 2px solid #fff; outline-offset: 2px; }
+  .outer-btn.danger{
+    background: rgba(192,96,74,0.28);
+    border-color: rgba(192,96,74,0.55);
+    color: #fff;
+  }
+  .outer-btn.danger:hover{ background: rgba(192,96,74,0.4); }
+
+  .outer-confirm{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+    background: rgba(0,0,0,0.22);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 10px 18px;
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--day) calc(var(--t) * 100%), #fff calc((1 - var(--t)) * 100%));
+    font-size: 13px;
+  }
+
+  .manage-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom: 8px;
+  }
+  .manage-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding: 10px 12px;
+    border: 1px solid #ece7d9;
+    border-radius: 10px;
+    background: #fffefc;
+  }
+  .manage-item-title{
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .manage-item-actions{
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .manage-arrow, .manage-remove{
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid #e4dfd2;
+    background: #fff;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .manage-arrow:disabled{ opacity: 0.3; cursor: not-allowed; }
+  .manage-arrow:hover:not(:disabled){ background: #f6f1e6; }
+  .manage-remove{ color: #c0604a; border-color: #ecd3cb; }
+  .manage-remove:hover{ background: #fbeeea; }
+
+  .grid-header{
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  .grid-header h1{ font-size: 28px; }
+  .grid-header .sub{ margin: 0 auto; }
+
+  .win-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .win-card{
+    position:relative;
+    background:#fffefc;
+    border: 1.5px solid #ece7d9;
+    border-radius: 16px;
+    padding: 16px 10px 12px;
+    text-align:center;
+    cursor:pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+  .win-card:hover{ transform: translateY(-2px); border-color:#d8d0b8; }
+  .win-card.win-done{
+    background: color-mix(in srgb, var(--sage) 12%, #fffefc);
+    border-color: color-mix(in srgb, var(--sage) 55%, #ece7d9);
+  }
+  .win-card .icon{
+    width: 26px; height: 26px;
+    margin: 0 auto 8px;
+    stroke: var(--dawn);
+  }
+  .win-card.win-done .icon{ stroke: var(--sage); }
+  .win-title{
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .win-check{
+    position:absolute;
+    top: 8px; right: 8px;
+    width: 21px; height: 21px;
+    border-radius: 50%;
+    border: 1.5px solid #d8d0b8;
+    background: #fff;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff;
+    cursor:pointer;
+    padding:0;
+  }
+  .win-check.checked{
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+  .win-check:focus-visible{ outline: 2px solid var(--dawn); outline-offset:2px; }
+
+  .next-main.complete-done{
+    background: linear-gradient(135deg, var(--sage), #8fae9b);
+    box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--sage) 60%, transparent);
+  }
+
+  /* Intro screen */
+  .intro{ text-align:center; padding: 30px 10px; }
+  .intro h1{ font-size:38px; }
+  .intro .sub{ margin-left:auto; margin-right:auto; }
+  .start-btn{
+    width:100%;
+    justify-content:center;
+    font-size:16px;
+    padding:16px;
+  }
+
+  /* Weight step */
+  .weight-row{
+    display:flex; gap:10px; align-items:center; margin-bottom:18px;
+  }
+  .weight-input{
+    flex:1;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:22px;
+    padding: 14px 16px;
+    border-radius:12px;
+    border:1px solid #e4dfd2;
+    background:#fffef c;
+    background: #fffefc;
+    color: var(--ink);
+  }
+  .weight-input:focus-visible{ outline: 2px solid var(--dawn); outline-offset:1px; }
+  .unit-toggle{
+    display:flex; border:1px solid #e4dfd2; border-radius:10px; overflow:hidden;
+    font-family:'IBM Plex Mono', monospace; font-size:12px;
+  }
+  .unit-toggle button{
+    border:none; background:#fff; padding:10px 12px; cursor:pointer; color: var(--ink-soft);
+  }
+  .unit-toggle button.active{ background: var(--dawn); color:#fff; }
+
+  .save-msg{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color: var(--sage);
+    min-height: 18px;
+    margin: -6px 0 14px;
+  }
+
+  .spark{
+    display:flex; align-items:flex-end; gap:6px; height:56px; margin: 4px 0 24px;
+  }
+  .spark .bar{
+    flex:1;
+    background: linear-gradient(180deg, var(--amber), var(--dawn));
+    border-radius: 4px 4px 2px 2px;
+    min-height:4px;
+    position:relative;
+  }
+  .spark-empty{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color: var(--ink-soft);
+    margin: 4px 0 24px;
+  }
+
+  /* Completion */
+  .complete{ text-align:center; padding: 24px 6px 6px; }
+  .stamp{
+    width:88px; height:88px;
+    margin: 0 auto 20px;
+    border: 2.5px solid var(--sage);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--sage);
+    transform: rotate(-8deg);
+    animation: stampIn 0.5s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes stampIn{
+    0%{ transform: scale(0) rotate(-8deg); opacity:0; }
+    100%{ transform: scale(1) rotate(-8deg); opacity:1; }
+  }
+  .restart{
+    background: none;
+    border: 1px solid #e4dfd2;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    cursor:pointer;
+    color: var(--ink-soft);
+    margin-top:8px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  @media (max-width:480px){
+    .card{ padding: 32px 22px 26px; }
+    h1{ font-size:25px; }
+    .intro h1{ font-size:30px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="arc-wrap">
+    <svg viewBox="0 0 400 92" preserveAspectRatio="xMidYMax meet">
+      <path d="M 20 88 A 180 180 0 0 1 380 88" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="1 7" stroke-linecap="round"/>
+      <circle id="sunDot" class="sun" cx="20" cy="88" r="7" fill="#F4A259"/>
+    </svg>
+  </div>
+  <div class="steplabel" id="stepLabel"></div>
+  <div class="card" id="card"></div>
+  <div class="outer-actions" id="outerActions"></div>
+</div>
+
+<script>
+// Standalone storage shim: mirrors the Claude artifact storage API using the browser's
+// own localStorage, so this page works fully independently once hosted anywhere.
+window.storage = {
+  async get(key, shared){
+    try{
+      const raw = localStorage.getItem(key);
+      if (raw === null) return null;
+      return { key, value: raw, shared: !!shared };
+    }catch(e){ return null; }
+  },
+  async set(key, value, shared){
+    try{
+      localStorage.setItem(key, value);
+      return { key, value, shared: !!shared };
+    }catch(e){ return null; }
+  },
+  async delete(key, shared){
+    try{
+      const existed = localStorage.getItem(key) !== null;
+      localStorage.removeItem(key);
+      return { key, deleted: existed, shared: !!shared };
+    }catch(e){ return null; }
+  },
+  async list(prefix, shared){
+    try{
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (!prefix || k.startsWith(prefix)) keys.push(k);
+      }
+      return { keys, prefix, shared: !!shared };
+    }catch(e){ return null; }
+  }
+};
+
+const ICONS = {
+  news: `<svg class="icon" viewBox="0 0 44 44"><rect x="6" y="10" width="32" height="26" rx="2"/><path d="M6 16h32"/><path d="M12 22h8"/><path d="M12 27h8"/><path d="M25 22h7M25 27h7M25 32h7"/></svg>`,
+  book: `<svg class="icon" viewBox="0 0 44 44"><path d="M22 12c-3-3-9-4-14-3v24c5-1 11 0 14 3 3-3 9-4 14-3V9c-5-1-11 0-14 3z"/><path d="M22 12v24"/></svg>`,
+  beads: `<svg class="icon" viewBox="0 0 44 44"><circle cx="22" cy="9" r="3.2"/><circle cx="32" cy="14" r="3.2"/><circle cx="36" cy="23" r="3.2"/><circle cx="32" cy="32" r="3.2"/><circle cx="22" cy="37" r="3.2"/><circle cx="12" cy="32" r="3.2"/><circle cx="8" cy="23" r="3.2"/><circle cx="12" cy="14" r="3.2"/></svg>`,
+  calendar: `<svg class="icon" viewBox="0 0 44 44"><rect x="7" y="10" width="30" height="26" rx="3"/><path d="M7 18h30"/><path d="M15 6v8M29 6v8"/><circle cx="16" cy="26" r="1.6" fill="currentColor" stroke="none"/><circle cx="22" cy="26" r="1.6" fill="currentColor" stroke="none"/><circle cx="28" cy="26" r="1.6" fill="currentColor" stroke="none"/></svg>`,
+  ball: `<svg class="icon" viewBox="0 0 44 44"><circle cx="22" cy="22" r="15"/><path d="M22 12l6 4.5-2.3 7.2h-7.4L16 16.5z"/><path d="M22 12V7M28 16.5l4.5-2.7M28.7 23.7l4 3.4M15.3 23.7l-4 3.4M16 16.5L11.5 13.8"/></svg>`,
+  mail: `<svg class="icon" viewBox="0 0 44 44"><rect x="6" y="11" width="32" height="22" rx="3"/><path d="M7 13l15 12 15-12"/></svg>`,
+  scale: `<svg class="icon" viewBox="0 0 44 44"><rect x="7" y="7" width="30" height="30" rx="6"/><circle cx="22" cy="24" r="7"/><path d="M22 24l4-5M17 13h10"/></svg>`,
+  headphones: `<svg class="icon" viewBox="0 0 44 44"><path d="M8 24v-2a14 14 0 0 1 28 0v2"/><rect x="6" y="24" width="8" height="11" rx="3"/><rect x="30" y="24" width="8" height="11" rx="3"/></svg>`,
+  camera: `<svg class="icon" viewBox="0 0 44 44"><rect x="6" y="12" width="32" height="24" rx="5"/><circle cx="22" cy="24" r="7"/><path d="M16 12l2.5-4h7L28 12"/></svg>`,
+  ghost: `<svg class="icon" viewBox="0 0 44 44"><path d="M10 34V20a12 12 0 0 1 24 0v14l-4-3-4 3-4-3-4 3-4-3z"/><circle cx="17" cy="20" r="1.4" fill="currentColor" stroke="none"/><circle cx="27" cy="20" r="1.4" fill="currentColor" stroke="none"/></svg>`,
+  custom: `<svg class="icon" viewBox="0 0 44 44"><rect x="7" y="7" width="30" height="30" rx="8"/><path d="M22 15v14M15 22h14"/></svg>`,
+  chat: `<svg class="icon" viewBox="0 0 44 44"><path d="M7 12h30v18H18l-7 6v-6H7z"/><path d="M14 19h16M14 24h11"/></svg>`
+};
+
+function iconFor(s){ return ICONS[s.iconKey] || ICONS.custom; }
+
+const DEFAULT_STEPS = [
+  {
+    id:'athkar', iconKey:'beads', title:"Morning Athkar",
+    sub:"A few minutes of remembrance before anything else.",
+    links:[{label:"Open Hisnul Muslim", url:"https://www.hisnmuslim.com/en/", primary:true}]
+  },
+  {
+    id:'quran', iconKey:'book', title:"Read a page",
+    sub:"One page of Qur'an to start the day grounded.",
+    links:[{label:"Open Quran.com", url:"https://quran.com", primary:true}]
+  },
+  {
+    id:'news', iconKey:'news', title:"Today's headlines",
+    sub:"Skim what's happening before the day gets loud.",
+    links:[{label:"Open BBC News", url:"https://www.bbc.com/news", primary:true}]
+  },
+  {
+    id:'alarabiya', iconKey:'news', title:"Al Arabiya",
+    sub:"A second angle on today's news.",
+    links:[{label:"Open Al Arabiya", url:"https://www.alarabiya.net", primary:true}]
+  },
+  {
+    id:'calendar', iconKey:'calendar', title:"What's on today",
+    sub:"A quick look at the day ahead — meetings, plans, gaps.",
+    links:[{label:"Open Calendar", url:"https://calendar.google.com", primary:true}]
+  },
+  {
+    id:'sports', iconKey:'ball', title:"Match check",
+    sub:"Al Hilal and Chelsea — today's fixtures and this week's results.",
+    links:[
+      {label:"Al Hilal — fixtures & results", url:"https://www.google.com/search?q=Al+Hilal+fixtures+results", primary:true},
+      {label:"Chelsea — fixtures & results", url:"https://www.chelseafc.com/en/matches", primary:false}
+    ]
+  },
+  {
+    id:'mail', iconKey:'mail', title:"Inbox",
+    sub:"Clear or triage what came in overnight.",
+    links:[{label:"Open Gmail", url:"https://mail.google.com", primary:true}]
+  },
+  {
+    id:'weight', iconKey:'scale', title:"Log today's weight",
+    sub:"One number, logged daily, tells a better story than one number alone.",
+    type:'weight'
+  },
+  {
+    id:'podcast', iconKey:'headphones', title:"English podcast",
+    sub:"Listen to an English-language podcast to keep your ear tuned.",
+    links:[
+      {label:"Open Spotify — English podcasts", url:"https://open.spotify.com/search/english%20podcast", primary:true},
+      {label:"Open Apple Podcasts — English", url:"https://podcasts.apple.com/us/genre/podcasts/id26", primary:false}
+    ]
+  },
+  {
+    id:'english', iconKey:'chat', title:"English speaking practice",
+    sub:"5 minutes of listening and speaking practice with ChatGPT.",
+    links:[{label:"Open ChatGPT", url:"https://chat.openai.com", primary:true}]
+  },
+  {
+    id:'reading', iconKey:'book', title:"Book reading",
+    sub:"Read at least 5 pages of a book.",
+    links:[
+      {label:"Open Kindle", url:"https://read.amazon.com", primary:true},
+      {label:"Open Goodreads", url:"https://www.goodreads.com", primary:false}
+    ]
+  }
+];
+
+const DEFAULT_NOTES = {
+  athkar: "أبدأ يومي بأذكار الصباح لأشحن نفسي روحيًا وأحافظ على صلتي بالله قبل أي شيء آخر.",
+  quran: "أقرأ صفحة واحدة على الأقل من القرآن يوميًا لأطوّر حفظي وفهمي وأزيد قربي من كتاب الله.",
+  news: "أتابع أهم الأخبار المحلية والعالمية يوميًا لأبقى مطلعًا وواعيًا بما يحدث حولي في العالم.",
+  alarabiya: "أتابع أهم الأخبار المحلية والعالمية يوميًا لأبقى مطلعًا وواعيًا بما يحدث حولي في العالم.",
+  calendar: "أراجع مواعيدي واجتماعاتي لهذا اليوم لأنظّم وقتي وأبدأ يومي بخطة واضحة.",
+  sports: "أتابع نتائج ومباريات فريقيّ المفضّلين (الهلال وتشيلسي) لأبقى على اطلاع بمجرياتهم أولًا بأول.",
+  mail: "أتفقد بريدي الإلكتروني كل صباح لأرد على المهم وأنظّم مهام يومي بشكل صحيح.",
+  weight: "أسجّل وزني يوميًا لأتابع تقدمي نحو هدفي في إنقاص الوزن والحفاظ على لياقتي.",
+  podcast: "أستمع إلى بودكاست باللغة الإنجليزية يوميًا لتحسين مهارتي في الاستماع والتعرّض المستمر للغة.",
+  english: "أتحدث مع ChatGPT لمدة 5 دقائق يوميًا لتحسين مهارتي في الاستماع والمحادثة باللغة الإنجليزية.",
+  reading: "أقرأ 5 صفحات على الأقل يوميًا من كتاب لتوسيع معرفتي وبناء عادة القراءة المستمرة."
+};
+
+let STEPS = [];
+let view = 'grid'; // 'grid' | 'detail' | 'manage' | 'add'
+let activeId = null;
+let unit = 'kg';
+let customLinks = {};
+let editingStep = null;
+let skillNotes = {};
+let editingNoteStep = null;
+let removeConfirmStep = null;
+let completions = { day: '', done: {} };
+
+const card = document.getElementById('card');
+const stepLabel = document.getElementById('stepLabel');
+const sunDot = document.getElementById('sunDot');
+const root = document.documentElement;
+const outerActions = document.getElementById('outerActions');
+
+// ---------- storage ----------
+async function loadSteps(){
+  try{
+    const res = await window.storage.get('routine-steps', false);
+    if (res && res.value){
+      const parsed = JSON.parse(res.value);
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+    }
+  }catch(e){}
+  return DEFAULT_STEPS.map(s => ({...s}));
+}
+async function saveSteps(){
+  try{ await window.storage.set('routine-steps', JSON.stringify(STEPS), false); }
+  catch(e){ console.error('storage error', e); }
+}
+async function loadCustomLinks(){
+  try{
+    const res = await window.storage.get('custom-links', false);
+    return res ? JSON.parse(res.value) : {};
+  }catch(e){ return {}; }
+}
+async function saveCustomLinks(){
+  try{ await window.storage.set('custom-links', JSON.stringify(customLinks), false); }
+  catch(e){ console.error('storage error', e); }
+}
+async function loadSkillNotes(){
+  try{
+    const res = await window.storage.get('skill-notes', false);
+    return res ? JSON.parse(res.value) : {};
+  }catch(e){ return {}; }
+}
+async function saveSkillNotes(){
+  try{ await window.storage.set('skill-notes', JSON.stringify(skillNotes), false); }
+  catch(e){ console.error('storage error', e); }
+}
+async function loadCompletions(){
+  try{
+    const res = await window.storage.get('completions', false);
+    if (res) return JSON.parse(res.value);
+  }catch(e){}
+  return { day: new Date().toDateString(), done: {} };
+}
+async function saveCompletions(){
+  try{ await window.storage.set('completions', JSON.stringify(completions), false); }
+  catch(e){ console.error('storage error', e); }
+}
+async function loadWeights(){
+  try{
+    const res = await window.storage.get('weight-entries', false);
+    return res ? JSON.parse(res.value) : [];
+  }catch(e){ return []; }
+}
+async function saveWeights(entries){
+  try{ await window.storage.set('weight-entries', JSON.stringify(entries), false); }
+  catch(e){ console.error('storage error', e); }
+}
+
+function linksFor(s){
+  return (customLinks[s.id] && customLinks[s.id].length) ? customLinks[s.id] : s.links;
+}
+function ensureToday(){
+  const today = new Date().toDateString();
+  if (completions.day !== today){
+    completions = { day: today, done: {} };
+  }
+}
+async function toggleComplete(id){
+  ensureToday();
+  completions.done[id] = !completions.done[id];
+  await saveCompletions();
+  render();
+}
+function fmtDate(d){
+  return d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+}
+
+// ---------- step management ----------
+function slugify(str){
+  return 'custom-' + str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,30) + '-' + Date.now().toString(36);
+}
+async function removeStep(id){
+  const idx = STEPS.findIndex(s => s.id === id);
+  if (idx === -1) return;
+  STEPS.splice(idx, 1);
+  delete customLinks[id];
+  delete skillNotes[id];
+  delete completions.done[id];
+  await saveSteps();
+  await saveCustomLinks();
+  await saveSkillNotes();
+  await saveCompletions();
+  removeConfirmStep = null;
+  if (activeId === id){ view = 'grid'; activeId = null; }
+  render();
+}
+async function moveStep(id, dir){
+  const idx = STEPS.findIndex(s => s.id === id);
+  const target = idx + dir;
+  if (idx === -1 || target < 0 || target >= STEPS.length) return;
+  [STEPS[idx], STEPS[target]] = [STEPS[target], STEPS[idx]];
+  await saveSteps();
+  render();
+}
+async function addWindow(title, sub, label, url){
+  const newStep = {
+    id: slugify(title),
+    iconKey: 'custom',
+    title,
+    sub: sub || '',
+    links: [{ label: label || 'Open link', url, primary: true }]
+  };
+  STEPS.push(newStep);
+  await saveSteps();
+  view = 'grid';
+  render();
+}
+async function migrateSteps(){
+  let changed = false;
+  ['english', 'reading'].forEach(id => {
+    if (!STEPS.find(s => s.id === id)){
+      const def = DEFAULT_STEPS.find(s => s.id === id);
+      if (def){ STEPS.push({...def}); changed = true; }
+    }
+  });
+  const podcastIdx = STEPS.findIndex(s => s.id === 'podcast');
+  if (podcastIdx !== -1 && STEPS[podcastIdx].title !== 'English podcast'){
+    const def = DEFAULT_STEPS.find(s => s.id === 'podcast');
+    STEPS[podcastIdx] = {...STEPS[podcastIdx], title: def.title, sub: def.sub, links: def.links};
+    changed = true;
+  }
+  if (changed) await saveSteps();
+}
+
+// ---------- progress arc (tracks completion, not navigation) ----------
+function arcPoint(t){
+  const angle = Math.PI - t * Math.PI;
+  const cx = 200, cy = 88, r = 180;
+  return { x: cx + r*Math.cos(angle), y: cy - r*Math.sin(angle) };
+}
+function setProgress(){
+  ensureToday();
+  const total = STEPS.length;
+  const done = STEPS.filter(s => completions.done[s.id]).length;
+  const t = total ? done / total : 0;
+  root.style.setProperty('--t', t.toFixed(3));
+  const p = arcPoint(t);
+  sunDot.setAttribute('cx', p.x.toFixed(1));
+  sunDot.setAttribute('cy', p.y.toFixed(1));
+}
+
+// ---------- skill note (shared between detail views) ----------
+function renderSkillNote(s){
+  const wrap = document.createElement('div');
+  wrap.className = 'skill-note';
+  const note = skillNotes[s.id] || '';
+  const isEditing = editingNoteStep === s.id;
+
+  if (!isEditing){
+    wrap.innerHTML = `
+      <div class="skill-note-label">Skill I'm improving here</div>
+      <p class="skill-note-text ${note ? '' : 'skill-note-empty'}" dir="auto">${note ? note.replace(/</g,'&lt;') : 'Not set yet — add what you want to work on during this window.'}</p>
+      <button class="edit-link-btn" id="editNoteBtn">✎ ${note ? 'Edit note' : 'Add note'}</button>
+    `;
+    card.appendChild(wrap);
+    document.getElementById('editNoteBtn').addEventListener('click', ()=>{ editingNoteStep = s.id; render(); });
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div class="skill-note-label">Skill I'm improving here</div>
+    <textarea class="skill-note-input" id="noteInput" rows="3" dir="auto" placeholder="e.g. Reading more fluently, staying informed without doomscrolling, tracking weight consistently...">${note.replace(/</g,'&lt;')}</textarea>
+    <div class="edit-row">
+      <button class="edit-link-btn" id="saveNoteBtn">Save note</button>
+      <button class="edit-link-btn" id="cancelNoteBtn">Cancel</button>
+    </div>
+  `;
+  card.appendChild(wrap);
+  document.getElementById('saveNoteBtn').addEventListener('click', async ()=>{
+    const val = document.getElementById('noteInput').value.trim();
+    if (val) skillNotes[s.id] = val; else delete skillNotes[s.id];
+    await saveSkillNotes();
+    editingNoteStep = null;
+    render();
+  });
+  document.getElementById('cancelNoteBtn').addEventListener('click', ()=>{
+    editingNoteStep = null;
+    render();
+  });
+}
+
+// ---------- weight detail ----------
+async function renderWeightStep(s){
+  const entries = await loadWeights();
+  const today = new Date().toDateString();
+  const todays = entries.find(e => e.day === today);
+
+  card.innerHTML = `
+    ${iconFor(s)}
+    <h1>${s.title}</h1>
+    <p class="sub">${s.sub}</p>
+    <div class="weight-row">
+      <input class="weight-input" id="weightInput" type="number" inputmode="decimal" step="0.1" dir="ltr"
+        placeholder="e.g. 74.5" value="${todays ? todays.value : ''}">
+      <div class="unit-toggle">
+        <button data-u="kg" class="${unit==='kg'?'active':''}">kg</button>
+        <button data-u="lb" class="${unit==='lb'?'active':''}">lb</button>
+      </div>
+    </div>
+    <div class="save-msg" id="saveMsg">${todays ? "Logged for today ✓" : ""}</div>
+    ${entries.length ? '<div class="spark" id="spark"></div>' : '<div class="spark-empty">Your last few entries will show up here once you start logging.</div>'}
+    <div class="actions">
+      <button class="btn btn-primary" id="saveWeightBtn">Save today's weight <span class="btn-arrow">↵</span></button>
+    </div>
+  `;
+
+  if (entries.length){
+    const last = entries.slice(-7);
+    const max = Math.max(...last.map(e=>e.value));
+    const min = Math.min(...last.map(e=>e.value));
+    const range = Math.max(max - min, 0.5);
+    const spark = document.getElementById('spark');
+    spark.innerHTML = last.map(e=>{
+      const h = 12 + ((e.value - min) / range) * 44;
+      return `<div class="bar" style="height:${h}px" title="${fmtDate(new Date(e.day))}: ${e.value}${e.unit}"></div>`;
+    }).join('');
+  }
+
+  card.querySelectorAll('.unit-toggle button').forEach(b=>{
+    b.addEventListener('click', ()=>{ unit = b.dataset.u; render(); });
+  });
+
+  document.getElementById('saveWeightBtn').addEventListener('click', async ()=>{
+    const val = parseFloat(document.getElementById('weightInput').value);
+    const msg = document.getElementById('saveMsg');
+    if (!val || val <= 0){ msg.textContent = "Enter a number first"; msg.style.color = '#c0604a'; return; }
+    const filtered = entries.filter(e => e.day !== today);
+    filtered.push({ day: today, value: val, unit });
+    await saveWeights(filtered);
+    msg.style.color = '';
+    msg.textContent = "Saved ✓";
+    render();
+  });
+}
+
+// ---------- link detail ----------
+function renderLinkStep(s){
+  const links = linksFor(s);
+  const isEditing = editingStep === s.id;
+
+  if (!isEditing){
+    card.innerHTML = `
+      ${iconFor(s)}
+      <h1>${s.title}</h1>
+      <p class="sub">${s.sub}</p>
+      <div class="actions">
+        ${links.map(l => `<a class="btn ${l.primary?'btn-primary':'btn-secondary'}" href="${l.url}" target="_blank" rel="noopener">${l.label} <span class="btn-arrow">↗</span></a>`).join('')}
+      </div>
+    `;
+    return;
+  }
+
+  card.innerHTML = `
+    ${iconFor(s)}
+    <h1>${s.title}</h1>
+    <p class="sub">Edit the label and link for this window.</p>
+    <div class="edit-fields" id="editFields">
+      ${links.map((l,i) => `
+        <div class="edit-field">
+          <label>Label</label>
+          <input type="text" class="edit-input" dir="auto" data-i="${i}" data-k="label" value="${l.label.replace(/"/g,'&quot;')}">
+          <label>Link</label>
+          <input type="url" class="edit-input" dir="ltr" data-i="${i}" data-k="url" value="${l.url.replace(/"/g,'&quot;')}">
+        </div>
+      `).join('')}
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="saveLinkBtn">Save changes</button>
+      <button class="btn btn-secondary" id="cancelLinkBtn">Cancel</button>
+    </div>
+  `;
+
+  document.getElementById('saveLinkBtn').addEventListener('click', async ()=>{
+    const inputs = card.querySelectorAll('.edit-input');
+    const draft = links.map(l => ({...l}));
+    inputs.forEach(inp=>{
+      const i = parseInt(inp.dataset.i, 10);
+      const k = inp.dataset.k;
+      const val = inp.value.trim();
+      if (val) draft[i][k] = val;
+    });
+    customLinks[s.id] = draft;
+    await saveCustomLinks();
+    editingStep = null;
+    render();
+  });
+  document.getElementById('cancelLinkBtn').addEventListener('click', ()=>{
+    editingStep = null;
+    render();
+  });
+}
+
+function renderDetailNav(s){
+  const isDone = !!completions.done[s.id];
+  const nav = document.createElement('div');
+  nav.className = 'nav';
+  nav.innerHTML = `
+    <button id="backToGridBtn" class="back-main">← Overview</button>
+    <button id="completeBtn" class="next-main ${isDone ? 'complete-done' : ''}">${isDone ? 'Completed ✓' : 'Mark complete ✓'}</button>
+  `;
+  card.appendChild(nav);
+  document.getElementById('backToGridBtn').addEventListener('click', ()=>{ view = 'grid'; activeId = null; render(); });
+  document.getElementById('completeBtn').addEventListener('click', ()=> toggleComplete(s.id));
+}
+
+// ---------- grid (overview) ----------
+function renderGrid(){
+  ensureToday();
+  const doneCount = STEPS.filter(s => completions.done[s.id]).length;
+  card.innerHTML = `
+    <div class="grid-header">
+      <h1>Good morning.</h1>
+      <p class="sub">${STEPS.length ? `${doneCount} of ${STEPS.length} done today` : "No windows yet — add the first one below."}</p>
+    </div>
+    <div class="win-grid">
+      ${STEPS.map(s => {
+        const isDone = !!completions.done[s.id];
+        return `
+        <div class="win-card ${isDone ? 'win-done' : ''}" data-id="${s.id}">
+          <button class="win-check ${isDone ? 'checked' : ''}" data-id="${s.id}" aria-label="${isDone ? 'Mark incomplete' : 'Mark complete'}">
+            ${isDone ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg>' : ''}
+          </button>
+          <div class="win-icon">${iconFor(s)}</div>
+          <div class="win-title">${s.title}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+  card.querySelectorAll('.win-card').forEach(el=>{
+    el.addEventListener('click', ()=>{ view = 'detail'; activeId = el.dataset.id; render(); });
+  });
+  card.querySelectorAll('.win-check').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleComplete(btn.dataset.id); });
+  });
+}
+
+// ---------- manage / reorder ----------
+function renderManageScreen(){
+  card.innerHTML = `
+    <h1 style="font-size:26px;">Reorder windows</h1>
+    <p class="sub">Move stops up or down, or remove one.</p>
+    <div class="manage-list">
+      ${STEPS.map((s,i) => `
+        <div class="manage-item">
+          <div class="manage-item-title">${i+1}. ${s.title}</div>
+          <div class="manage-item-actions">
+            <button class="manage-arrow" data-dir="-1" data-id="${s.id}" ${i===0?'disabled':''} aria-label="Move up">↑</button>
+            <button class="manage-arrow" data-dir="1" data-id="${s.id}" ${i===STEPS.length-1?'disabled':''} aria-label="Move down">↓</button>
+            <button class="manage-remove" data-id="${s.id}" aria-label="Remove ${s.title}">✕</button>
+          </div>
+        </div>
+      `).join('') || '<p class="skill-note-empty">No windows yet.</p>'}
+    </div>
+  `;
+  card.querySelectorAll('.manage-arrow').forEach(b=>{
+    b.addEventListener('click', ()=> moveStep(b.dataset.id, parseInt(b.dataset.dir, 10)));
+  });
+  card.querySelectorAll('.manage-remove').forEach(b=>{
+    b.addEventListener('click', ()=> removeStep(b.dataset.id));
+  });
+}
+function renderManageNav(){
+  const nav = document.createElement('div');
+  nav.className = 'nav';
+  nav.innerHTML = `
+    <button class="back-main" disabled>← Back</button>
+    <button id="doneManageBtn" class="next-main">Done →</button>
+  `;
+  card.appendChild(nav);
+  document.getElementById('doneManageBtn').addEventListener('click', ()=>{ view = 'grid'; render(); });
+}
+
+// ---------- add window form ----------
+function renderAddForm(){
+  card.innerHTML = `
+    <div class="intro" style="text-align:left;">
+      <h1 style="font-size:26px;">Add a window</h1>
+      <p class="sub" style="margin-left:0;">Give it a name and where it should open to.</p>
+      <div class="edit-fields">
+        <div class="edit-field">
+          <label>Title</label>
+          <input type="text" class="edit-input" dir="auto" id="newTitle" placeholder="e.g. LinkedIn">
+        </div>
+        <div class="edit-field">
+          <label>Short description (optional)</label>
+          <input type="text" class="edit-input" dir="auto" id="newSub" placeholder="e.g. Check messages and notifications">
+        </div>
+        <div class="edit-field">
+          <label>Button label (optional)</label>
+          <input type="text" class="edit-input" dir="auto" id="newLabel" placeholder="e.g. Open LinkedIn">
+        </div>
+        <div class="edit-field">
+          <label>Link</label>
+          <input type="url" class="edit-input" dir="ltr" id="newUrl" placeholder="https://...">
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="confirmAddBtn">Add window</button>
+        <button class="btn btn-secondary" id="cancelAddBtn">Cancel</button>
+      </div>
+      <div class="save-msg" id="addErrMsg"></div>
+    </div>
+  `;
+  document.getElementById('confirmAddBtn').addEventListener('click', async ()=>{
+    const title = document.getElementById('newTitle').value.trim();
+    const sub = document.getElementById('newSub').value.trim();
+    const label = document.getElementById('newLabel').value.trim();
+    const url = document.getElementById('newUrl').value.trim();
+    const err = document.getElementById('addErrMsg');
+    if (!title || !url){
+      err.style.color = '#c0604a';
+      err.textContent = 'A title and a link are both needed.';
+      return;
+    }
+    await addWindow(title, sub, label, url);
+  });
+  document.getElementById('cancelAddBtn').addEventListener('click', ()=>{ view = 'grid'; render(); });
+}
+
+// ---------- outer toolbar ----------
+function renderOuterActions(){
+  outerActions.innerHTML = '';
+
+  if (view === 'grid'){
+    outerActions.innerHTML = `
+      <button class="outer-btn" id="addWindowOuterBtn">+ Add a window</button>
+      <button class="outer-btn" id="reorderOuterBtn">⇅ Reorder windows</button>
+    `;
+    document.getElementById('addWindowOuterBtn').addEventListener('click', ()=>{ view = 'add'; render(); });
+    document.getElementById('reorderOuterBtn').addEventListener('click', ()=>{ view = 'manage'; render(); });
+    return;
+  }
+
+  if (view !== 'detail') return;
+  const s = STEPS.find(x => x.id === activeId);
+  if (!s || editingStep === s.id) return;
+
+  if (removeConfirmStep === s.id){
+    outerActions.innerHTML = `
+      <div class="outer-confirm">
+        <span>Remove this window?</span>
+        <button class="outer-btn danger" id="confirmRemoveBtn">Yes, remove</button>
+        <button class="outer-btn" id="cancelRemoveBtn">Cancel</button>
+      </div>
+    `;
+    document.getElementById('confirmRemoveBtn').addEventListener('click', ()=> removeStep(s.id));
+    document.getElementById('cancelRemoveBtn').addEventListener('click', ()=>{ removeConfirmStep = null; render(); });
+    return;
+  }
+
+  const isLink = s.type !== 'weight';
+  const links = isLink ? linksFor(s) : [];
+  const hasCustom = !!(customLinks[s.id] && customLinks[s.id].length);
+
+  outerActions.innerHTML = `
+    ${isLink ? `<button class="outer-btn" id="editLinkOuterBtn">✎ Edit link${links.length>1?'s':''}</button>` : ''}
+    ${isLink && hasCustom ? `<button class="outer-btn" id="resetLinkOuterBtn">Reset to default</button>` : ''}
+    <button class="outer-btn danger" id="removeWindowOuterBtn">✕ Remove this window</button>
+  `;
+  if (isLink) document.getElementById('editLinkOuterBtn').addEventListener('click', ()=>{ editingStep = s.id; render(); });
+  const resetBtn = document.getElementById('resetLinkOuterBtn');
+  if (resetBtn) resetBtn.addEventListener('click', async ()=>{
+    delete customLinks[s.id];
+    await saveCustomLinks();
+    render();
+  });
+  document.getElementById('removeWindowOuterBtn').addEventListener('click', ()=>{ removeConfirmStep = s.id; render(); });
+}
+
+// ---------- master render ----------
+async function render(){
+  ensureToday();
+  setProgress();
+
+  if (view === 'manage'){
+    stepLabel.textContent = 'Reorder & manage';
+    renderManageScreen();
+    renderManageNav();
+    outerActions.innerHTML = '';
+    return;
+  }
+
+  if (view === 'add'){
+    stepLabel.textContent = 'Add a window';
+    renderAddForm();
+    outerActions.innerHTML = '';
+    return;
+  }
+
+  if (view === 'detail'){
+    const s = STEPS.find(x => x.id === activeId);
+    if (!s){ view = 'grid'; activeId = null; return render(); }
+    stepLabel.textContent = s.title;
+    if (s.type === 'weight'){
+      await renderWeightStep(s);
+    } else {
+      renderLinkStep(s);
+    }
+    if (editingStep !== s.id) renderSkillNote(s);
+    renderDetailNav(s);
+    renderOuterActions();
+    return;
+  }
+
+  // grid view (default / home)
+  stepLabel.textContent = '';
+  renderGrid();
+  renderOuterActions();
+}
+
+(async function init(){
+  STEPS = await loadSteps();
+  await migrateSteps();
+  customLinks = await loadCustomLinks();
+  skillNotes = await loadSkillNotes();
+  completions = await loadCompletions();
+  let notesChanged = false;
+  STEPS.forEach(s => {
+    if (!skillNotes[s.id] && DEFAULT_NOTES[s.id]){
+      skillNotes[s.id] = DEFAULT_NOTES[s.id];
+      notesChanged = true;
+    }
+  });
+  if (notesChanged) await saveSkillNotes();
+  render();
+})();
+</script>
+</body>
+</html>
